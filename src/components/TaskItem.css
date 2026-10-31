@@ -1,0 +1,104 @@
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid white;
+}
+
+.task-check {
+  appearance: none;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid grey;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+}
+
+.task-check:checked {
+  background: blue;
+  border-color: blue;
+}
+
+.task-check:checked::after {
+  content: '✓';
+  color: white;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.task-text {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* when the checkbox is ticked, strike through the text right after it */
+.task-check:checked + .task-text {
+  color: grey;
+  text-decoration: line-through;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.badge-high {
+  background: #fde2e4;
+  color: #d62839;
+}
+
+
+.badge-medium {
+  background: yellow;
+  color: rgb(139, 139, 57);
+}
+
+.badge-low {
+  background:lightgreen;
+  color: dark green;
+}
+
+.task-delete {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  opacity: 0.45;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .task-item {
+    padding: 16px 0;
+  }
+
+  .task-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+  }
+
+  .task-check:checked::after {
+    font-size: 13px;
+  }
+   
+  .task-text {
+    font-size: 16px;
+  }
+
+  .badge {
+    font-size: 12px;
+    padding: 4px 12px;
+  }
+
+  .task-delete {
+    font-size: 15px;
+  }
+}

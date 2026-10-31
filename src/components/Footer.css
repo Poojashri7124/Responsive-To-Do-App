@@ -1,0 +1,34 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 18px 13px;
+}
+
+.footer-count {
+  font-size: 10px;
+  color: #5d57a8;
+}
+
+.footer-clear {
+  border: none;
+  background: transparent;
+  color: blue;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 20px 26px 20px;
+  }
+
+  .footer-count {
+    font-size: 13px;
+  }
+
+  .footer-clear {
+    font-size: 14px;
+  }
+}
