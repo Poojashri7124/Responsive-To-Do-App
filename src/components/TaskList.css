@@ -1,10 +1,22 @@
 .task-list {
   list-style: none;
-  padding: 0 20px;
+  padding: 0 18px;
+}
+
+.task-empty {
+  padding: 24px 18px;
+  text-align: center;
+  font-size: 12px;
+  color: #8a86a8;
 }
 
 @media (max-width: 768px) {
   .task-list {
     padding: 0 26px;
+  }
+
+  .task-empty {
+    padding: 30px 26px;
+    font-size: 15px;
   }
 }

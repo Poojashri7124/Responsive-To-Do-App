@@ -2,18 +2,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 13px 18px 13px;
+  padding: 13px 18px;
 }
 
 .footer-count {
   font-size: 10px;
-  color: #5d57a8;
+  color: #6b6890;
 }
 
 .footer-clear {
   border: none;
   background: transparent;
-  color: blue;
+  color: #4f46e5;
   font-family: inherit;
   font-size: 11px;
   cursor: pointer;
@@ -21,7 +21,7 @@
 
 @media (max-width: 768px) {
   .footer {
-    padding: 20px 26px 20px;
+    padding: 20px 26px;
   }
 
   .footer-count {

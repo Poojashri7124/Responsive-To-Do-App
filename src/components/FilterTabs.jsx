@@ -1,6 +1,6 @@
 import './FilterTabs.css'
 
-function FilterTabs({ tabs, activeTab }) {
+function FilterTabs({ tabs, activeTab , onChange}) {
   return (
     <nav className="tabs">
       {tabs.map((tab) => (
@@ -8,6 +8,7 @@ function FilterTabs({ tabs, activeTab }) {
           key={tab}
           type="button"
           className={tab === activeTab ? 'tab tab-active' : 'tab'}
+          onClick = {() => onChange(tab)}
         >
           {tab}
         </button>

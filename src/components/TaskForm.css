@@ -9,12 +9,12 @@
 .task-select {
   height: 32px;
   padding: 0 10px;
-  border: 1px solid white;
+  border: 1px solid #d9d6f5;
   border-radius: 8px;
   font-family: inherit;
   font-size: 12px;
-  color: black;
-  background: white;
+  color: #1e1b3a;
+  background: #ffffff;
   min-width: 0;
 }
 
@@ -31,8 +31,8 @@
   padding: 0 16px;
   border: none;
   border-radius: 8px;
-  background: #3e3997;
-  color: white;
+  background: #4f46e5;
+  color: #ffffff;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;

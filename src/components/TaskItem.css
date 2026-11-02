@@ -1,9 +1,9 @@
 .task-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid white;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f0fa;
 }
 
 .task-check {
@@ -11,43 +11,48 @@
   flex-shrink: 0;
   width: 14px;
   height: 14px;
-  border: 1.5px solid grey;
+  margin: 0;
+  border: 1.5px solid #b9b5e6;
   border-radius: 4px;
-  background: white;
+  background: #ffffff;
   cursor: pointer;
   display: grid;
   place-content: center;
 }
 
 .task-check:checked {
-  background: blue;
-  border-color: blue;
+  background: #4f46e5;
+  border-color: #4f46e5;
 }
 
 .task-check:checked::after {
   content: '✓';
-  color: white;
+  color: #ffffff;
   font-size: 9px;
   line-height: 1;
 }
 
 .task-text {
   flex: 1;
-  font-size: 13px;
-  font-weight: 500;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
 }
 
-/* when the checkbox is ticked, strike through the text right after it */
-.task-check:checked + .task-text {
-  color: grey;
+.task-done {
+  color: #a9a6c8;
   text-decoration: line-through;
 }
 
 .badge {
-  padding: 3px 10px;
+  flex-shrink: 0;
+  padding: 0 9px;
   border-radius: 999px;
   font-size: 10px;
-  font-weight: 600;
+  line-height: 16px;
+  font-weight: 700;
 }
 
 .badge-high {
@@ -55,50 +60,53 @@
   color: #d62839;
 }
 
-
 .badge-medium {
-  background: yellow;
-  color: rgb(139, 139, 57);
+  background: #fdebc8;
+  color: #b7791f;
 }
 
 .badge-low {
-  background:lightgreen;
-  color: dark green;
+  background: #d8f5e1;
+  color: #2f855a;
 }
 
 .task-delete {
+  flex-shrink: 0;
   border: none;
   background: transparent;
-  font-size: 12px;
+  font-size: 11px;
   opacity: 0.45;
   cursor: pointer;
 }
 
 @media (max-width: 768px) {
   .task-item {
-    padding: 16px 0;
+    gap: 12px;
+    padding: 14.5px 0;
   }
 
   .task-check {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 5px;
   }
 
   .task-check:checked::after {
-    font-size: 13px;
+    font-size: 12px;
   }
-   
+
   .task-text {
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 21px;
   }
 
   .badge {
-    font-size: 12px;
-    padding: 4px 12px;
+    padding: 2px 12px;
+    font-size: 11px;
+    line-height: 18px;
   }
 
   .task-delete {
-    font-size: 15px;
+    font-size: 13px;
   }
 }

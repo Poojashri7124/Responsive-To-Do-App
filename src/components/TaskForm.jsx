@@ -1,16 +1,38 @@
+import { useState } from 'react'
 import './TaskForm.css'
 
-function TaskForm() {
+function TaskForm({ onAdd }) {
+  const [text, setText] = useState('')
+  const [priority, setPriority] = useState('Medium')
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    const trimmed = text.trim()
+    if (trimmed === '') return // empty tasks are not added
+    onAdd(trimmed, priority)
+    setText('')
+  }
+
   return (
-    <div className="task-form">
-      <input className="task-input" type="text" placeholder="Add a new task" />
-      <select className="task-select" defaultValue="Medium">
-        <option>HIGH</option>
-        <option>MEDIUM</option>
-        <option>LOW</option>
+    <form className="task-form" onSubmit={handleSubmit}>
+      <input
+        className="task-input"
+        type="text"
+        placeholder="Add a new task"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <select
+        className="task-select"
+        value={priority}
+        onChange={(e) => setPriority(e.target.value)}
+      >
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
       </select>
-      <button className="task-add" type="button">Add</button>
-    </div>
+      <button className="task-add" type="submit">Add</button>
+    </form>
   )
 }
 

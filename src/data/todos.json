@@ -1,7 +1,0 @@
-[
-  { "id": 1, "text": "Finish React static UI todo task", "priority": "High", "completed": false },
-  { "id": 2, "text": "Check for node js version number", "priority": "Medium", "completed": false },
-  { "id": 3, "text": "Push code to GitHub", "priority": "High", "completed": false },
-  { "id": 4, "text": "use responsive design", "priority": "Low", "completed": false },
-  { "id": 5, "text": "clear the errors by checking each conditions", "priority": "Medium", "completed": false }
-]
