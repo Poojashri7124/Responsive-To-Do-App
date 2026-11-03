@@ -5,12 +5,13 @@ function TaskForm({ onAdd }) {
   const [text, setText] = useState('')
   const [priority, setPriority] = useState('Medium')
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const trimmed = text.trim()
     if (trimmed === '') return // empty tasks are not added
-    onAdd(trimmed, priority)
-    setText('')
+
+    const added = await onAdd(trimmed, priority)
+    if (added) setText('') // clear the box only after the server said OK
   }
 
   return (

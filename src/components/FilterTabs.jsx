@@ -5,10 +5,10 @@ function FilterTabs({ tabs, activeTab , onChange}) {
     <nav className="tabs">
       {tabs.map((tab) => (
         <button
-          key={tab}
+          key={tab} //unique key for each tab
           type="button"
-          className={tab === activeTab ? 'tab tab-active' : 'tab'}
-          onClick = {() => onChange(tab)}
+          className={tab === activeTab ? 'tab tab-active' : 'tab'} // if tab and active tab is same then add active class to it
+          onClick = {() => onChange(tab)} //on click calls the onChange function and passes the tab name to it
         >
           {tab}
         </button>

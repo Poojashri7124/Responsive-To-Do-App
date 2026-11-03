@@ -13,14 +13,31 @@
   overflow: hidden;
   box-shadow: 0 18px 45px rgba(79, 70, 229, 0.16);
 }
+.status {
+  padding: 24px 18px;
+  text-align: center;
+  font-size: 12px;
+  color: #8a86a8;
+}
+
+.status-error {
+  margin: 12px 18px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fde2e4;
+  color: #d62839;
+  text-align: left;
+}
 
 @media (max-width: 768px) {
-  .app {
-    padding: 15px 17px;
+  .status {
+    padding: 30px 26px;
+    font-size: 15px;
   }
 
-  .card {
-    max-width: 480px;
-    border-radius: 24px;
+  .status-error {
+    margin: 16px 26px;
+    padding: 12px 14px;
+    border-radius: 10px;
   }
 }

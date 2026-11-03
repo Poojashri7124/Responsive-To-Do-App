@@ -2,14 +2,17 @@ import TaskItem from './TaskItem'
 import './TaskList.css'
 
 const emptyMessages = {
-  All: 'No tasks available.',
+  All: 'No tasks yet. Add one above!',
   Active: 'No active tasks.',
-  Completed : 'No completed Tasks.'
+  Completed: 'No completed tasks yet.',
 }
-function TaskList({ tasks, filter,onToggle,onDelete }) {
-  if(tasks.length === 0){
-    return <p className="task-empty">{emptyMessages[filter]}</p>
+
+function TaskList({ tasks, filter, searching, onToggle, onDelete, onEdit }) {
+  if (tasks.length === 0) {
+    const message = searching ? 'No tasks match your search.' : emptyMessages[filter]
+    return <p className="task-empty">{message}</p>
   }
+
   return (
     <ul className="task-list">
       {tasks.map((task) => (
@@ -18,8 +21,9 @@ function TaskList({ tasks, filter,onToggle,onDelete }) {
           text={task.text}
           priority={task.priority}
           completed={task.completed}
-          onToggle = {() => onToggle(task.id)}
-          onDelete = {() => onDelete(task.id)}
+          onToggle={() => onToggle(task.id)}
+          onDelete={() => onDelete(task.id)}
+          onEdit = {(newText) => onEdit(task.id, newText)}
         />
       ))}
     </ul>
