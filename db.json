@@ -1,23 +1,4 @@
 {
-  "todos": [
-    {
-      "text": "update the github",
-      "priority": "Medium",
-      "completed": false,
-      "id": "S-87FlXXWKo"
-    },
-    {
-      "text": "ytuyt",
-      "priority": "Medium",
-      "completed": false,
-      "id": "Hu5ljzvLvDk"
-    },
-    {
-      "text": "sfdsafafdsf",
-      "priority": "Medium",
-      "completed": false,
-      "id": "EIkiH1Zxs1s"
-    }
-  ],
+  "todos": [],
   "$schema": "./node_modules/json-server/schema.json"
 }

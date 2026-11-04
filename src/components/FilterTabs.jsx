@@ -1,17 +1,19 @@
+import { NavLink } from 'react-router-dom'
 import './FilterTabs.css'
 
-function FilterTabs({ tabs, activeTab , onChange}) {
+// Tabs are NavLinks now: the URL decides which one is highlighted
+function FilterTabs({ tabs }) {
   return (
     <nav className="tabs">
       {tabs.map((tab) => (
-        <button
-          key={tab} //unique key for each tab
-          type="button"
-          className={tab === activeTab ? 'tab tab-active' : 'tab'} // if tab and active tab is same then add active class to it
-          onClick = {() => onChange(tab)} //on click calls the onChange function and passes the tab name to it
+        <NavLink
+          key={tab.to}
+          to={tab.to}
+          end={tab.end}
+          className={({ isActive }) => (isActive ? 'tab tab-active' : 'tab')}
         >
-          {tab}
-        </button>
+          {tab.label}
+        </NavLink>
       ))}
     </nav>
   )

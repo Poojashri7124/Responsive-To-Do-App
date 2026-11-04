@@ -1,23 +1,27 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import './TaskItem.css'
-import {useState} from 'react'
-function TaskItem({ text, priority, completed ,onToggle,onDelete,onEdit}) {
+
+function TaskItem({ id, text, priority, completed, onToggle, onDelete, onEdit }) {
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState(text)
 
-  function startEditing (){
+  function startEditing() {
     setDraft(text)
     setIsEditing(true)
   }
+
   async function saveEdit() {
     const trimmed = draft.trim()
-    if (trimmed === ''|| trimmed === text){
+    // empty or unchanged -> just close, no request
+    if (trimmed === '' || trimmed === text) {
       setIsEditing(false)
       return
     }
     const saved = await onEdit(trimmed)
-    if(saved) setIsEditing(false)
+    if (saved) setIsEditing(false) // close only after the server said OK
   }
-  
+
   function handleKeyDown(e) {
     if (e.key === 'Enter') saveEdit()
     if (e.key === 'Escape') setIsEditing(false)
@@ -28,10 +32,11 @@ function TaskItem({ text, priority, completed ,onToggle,onDelete,onEdit}) {
       <input
         className="task-check"
         type="checkbox"
-        checked = {completed}
-        onChange = {onToggle}
+        checked={completed}
+        onChange={onToggle}
         aria-label={text}
       />
+
       {isEditing ? (
         <input
           className="task-edit"
@@ -53,6 +58,14 @@ function TaskItem({ text, priority, completed ,onToggle,onDelete,onEdit}) {
       )}
 
       <span className={`badge badge-${priority.toLowerCase()}`}>{priority}</span>
+      <Link
+        className="task-view"
+        to={`/todo/${id}`}
+        aria-label="View details"
+        title="View details"
+      >
+        ›
+      </Link>
       <button
         className="task-delete"
         type="button"

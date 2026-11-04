@@ -18,12 +18,13 @@ function TaskList({ tasks, filter, searching, onToggle, onDelete, onEdit }) {
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
+          id={task.id}
           text={task.text}
           priority={task.priority}
           completed={task.completed}
           onToggle={() => onToggle(task.id)}
           onDelete={() => onDelete(task.id)}
-          onEdit = {(newText) => onEdit(task.id, newText)}
+          onEdit={(newText) => onEdit(task.id, newText)}
         />
       ))}
     </ul>

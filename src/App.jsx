@@ -1,19 +1,26 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
-import Progress from './components/Progress'
-import TaskForm from './components/TaskForm'
-import SearchBar from './components/SearchBar'
 import FilterTabs from './components/FilterTabs'
-import TaskList from './components/TaskList'
-import Footer from './components/Footer'
+import TodoPage from './pages/TodoPage'
+import Stats from './pages/Stats'
+import TodoDetail from './pages/TodoDetail'
+import NotFound from './pages/NotFound'
 import { getTodos, addTodo, updateTodo, deleteTodo } from './api.js'
 import './App.css'
 
+const tabs = [
+  { label: 'All', to: '/', end: true },
+  { label: 'Active', to: '/active' },
+  { label: 'Completed', to: '/completed' },
+  { label: 'Stats', to: '/stats' },
+]
+
 function App() {
+  // shared state lives here, above <Routes>
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [filter, setFilter] = useState('All')
   const [query, setQuery] = useState('')
 
   // GET when the app opens
@@ -47,39 +54,39 @@ function App() {
     }
   }
 
-  // PATCH completed
-  async function toggleTask(id) {
-    const task = tasks.find((t) => t.id === id)
+  // PATCH any fields - returns the updated todo, or null if it failed
+  async function updateTask(id, changes) {
     try {
       setError(null)
-      const updated = await updateTodo(id, { completed: !task.completed })
+      const updated = await updateTodo(id, changes)
       setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)))
+      return updated
     } catch (err) {
       setError('Could not update the todo. Please try again.')
+      return null
     }
   }
 
-  // PATCH text (bonus: double-click to edit)
+  function toggleTask(id) {
+    const task = tasks.find((t) => t.id === id)
+    return updateTask(id, { completed: !task.completed })
+  }
+
   async function editTask(id, text) {
-    try {
-      setError(null)
-      const updated = await updateTodo(id, { text })
-      setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)))
-      return true
-    } catch (err) {
-      setError('Could not save the change. Please try again.')
-      return false
-    }
+    const updated = await updateTask(id, { text })
+    return updated !== null
   }
 
-  // DELETE
+  // DELETE - returns true/false
   async function deleteTask(id) {
     try {
       setError(null)
       await deleteTodo(id)
       setTasks((prev) => prev.filter((t) => t.id !== id))
+      return true
     } catch (err) {
       setError('Could not delete the todo. Please try again.')
+      return false
     }
   }
 
@@ -105,48 +112,38 @@ function App() {
     }
   }
 
-  // calculated while rendering - no second state
-  const search = query.trim().toLowerCase()
-
-  const visibleTasks = tasks.filter((task) => {
-    if (filter === 'Active' && task.completed) return false
-    if (filter === 'Completed' && !task.completed) return false
-    return task.text.toLowerCase().includes(search)
-  })
-
-  const remaining = tasks.filter((task) => !task.completed).length
-  const done = tasks.length - remaining
-
-  // hide the list when loading, or when loading failed (nothing to show)
-  const showList = !loading && !(error && tasks.length === 0)
+  const pageProps = {
+    tasks,
+    loading,
+    error,
+    query,
+    onQueryChange: setQuery,
+    onAdd: addTask,
+    onToggle: toggleTask,
+    onEdit: editTask,
+    onDelete: deleteTask,
+    onClear: clearCompleted,
+  }
 
   return (
     <div className="app">
       <div className="card">
-        <Header title="My Tasks" date="Tuesday, 3 November 2026" />
-        <Progress done={done} total={tasks.length} />
-        <TaskForm onAdd={addTask} />
-        <SearchBar query={query} onChange={setQuery} />
-        <FilterTabs
-          tabs={['All', 'Active', 'Completed']}
-          activeTab={filter}
-          onChange={setFilter}
-        />
+        <Header title="My Tasks" date="Wednesday, 4 November 2026" />
+        <FilterTabs tabs={tabs} />
 
         {error && <p className="status status-error">{error}</p>}
-        {loading && <p className="status">Loading…</p>}
-        {showList && (
-          <TaskList
-            tasks={visibleTasks}
-            filter={filter}
-            searching={search !== ''}
-            onToggle={toggleTask}
-            onDelete={deleteTask}
-            onEdit={editTask}
-          />
-        )}
 
-        <Footer remaining={remaining} onClear={clearCompleted} />
+        <Routes>
+          <Route path="/" element={<TodoPage filter="All" {...pageProps} />} />
+          <Route path="/active" element={<TodoPage filter="Active" {...pageProps} />} />
+          <Route path="/completed" element={<TodoPage filter="Completed" {...pageProps} />} />
+          <Route path="/stats" element={<Stats tasks={tasks} loading={loading} />} />
+          <Route
+            path="/todo/:id"
+            element={<TodoDetail onUpdate={updateTask} onDelete={deleteTask} />}
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </div>
     </div>
   )

@@ -34,3 +34,6 @@ export function updateTodo(id, changes) {
 export function deleteTodo(id) {
   return request(`${BASE_URL}/${id}`, { method: 'DELETE' }) //delete the task fro todo list
 }
+export function getTodo(id){
+  return request(`${BASE_URL}/${id}`)
+}

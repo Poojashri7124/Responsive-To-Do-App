@@ -2,12 +2,12 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 48px 16px;
+  padding: 24px 16px;
 }
 
 .card {
   width: 100%;
-  max-width: 350px;
+  max-width: 1500px;
   background: #ffffff;
   border-radius: 20px;
   overflow: hidden;
