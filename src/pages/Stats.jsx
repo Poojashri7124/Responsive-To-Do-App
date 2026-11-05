@@ -1,17 +1,14 @@
+import { useTodos } from '../context/TodoContext'
+import { useTodoStats } from '../hooks/useTodoStats'
 import './Stats.css'
 
-const priorities = ['High', 'Medium', 'Low']
+function Stats() {
+  const { todos, loading } = useTodos()
+  const { total, completed, pending, percent, byPriority } = useTodoStats(todos)
 
-function Stats({ tasks, loading }) {
   if (loading) {
     return <p className="status">Loading…</p>
   }
-
-  // all calculated while rendering from the shared tasks
-  const total = tasks.length
-  const completed = tasks.filter((t) => t.completed).length
-  const pending = total - completed
-  const percent = total === 0 ? 0 : Math.round((completed / total) * 100)
 
   return (
     <div className="stats">
@@ -36,14 +33,12 @@ function Stats({ tasks, loading }) {
 
       <h2 className="stats-title">By priority</h2>
       <ul className="stats-list">
-        {priorities.map((name) => (
-          <li key={name} className="stats-row">
-            <span className={`stats-chip stats-chip-${name.toLowerCase()}`}>
-              {name}
+        {byPriority.map((item) => (
+          <li key={item.name} className="stats-row">
+            <span className={`stats-chip stats-chip-${item.name.toLowerCase()}`}>
+              {item.name}
             </span>
-            <span className="stats-count">
-              {tasks.filter((t) => t.priority === name).length}
-            </span>
+            <span className="stats-count">{item.count}</span>
           </li>
         ))}
       </ul>

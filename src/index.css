@@ -4,9 +4,20 @@
   padding: 0;
 }
 
+/* one variable: the left / right spacing (smaller on mobile) */
+:root {
+  --px: 32px;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   background: #ecebff;
   color: #1e1b3a;
   min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --px: 26px;
+  }
 }

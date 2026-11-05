@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useTodos } from '../context/TodoContext'
 import './TaskForm.css'
 
-function TaskForm({ onAdd }) {
+function TaskForm() {
+  const { addTodo } = useTodos()
   const [text, setText] = useState('')
   const [priority, setPriority] = useState('Medium')
 
@@ -10,7 +12,7 @@ function TaskForm({ onAdd }) {
     const trimmed = text.trim()
     if (trimmed === '') return // empty tasks are not added
 
-    const added = await onAdd(trimmed, priority)
+    const added = await addTodo(trimmed, priority)
     if (added) setText('') // clear the box only after the server said OK
   }
 

@@ -1,12 +1,17 @@
+import { useTodos } from '../context/TodoContext'
+import { useTodoStats } from '../hooks/useTodoStats'
 import './Footer.css'
 
-function Footer({ remaining, onClear }) {
+function Footer() {
+  const { todos, clearCompleted } = useTodos()
+  const { pending } = useTodoStats(todos)
+
   return (
     <footer className="footer">
       <span className="footer-count">
-        {remaining} {remaining === 1 ? 'task' : 'tasks'}  left 
+        {pending} {pending === 1 ? 'task' : 'tasks'} left
       </span>
-      <button className="footer-clear" type="button" onClick={onClear}>
+      <button className="footer-clear" type="button" onClick={clearCompleted}>
         Clear completed
       </button>
     </footer>

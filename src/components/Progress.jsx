@@ -1,15 +1,17 @@
+import { useTodos } from '../context/TodoContext'
+import { useTodoStats } from '../hooks/useTodoStats'
 import './Progress.css'
 
-function Progress({ done, total }) {
-  const percent = total === 0 ? 0 : Math.round((done / total) * 100)
+function Progress() {
+  const { todos } = useTodos()
+  const { completed, total, percent } = useTodoStats(todos)
 
   return (
     <div className="progress">
       <div className="progress-info">
         <span>Progress</span>
         <span>
-          
-          {done} of {total} done · {percent}%  
+          {completed} of {total} done · {percent}%
         </span>
       </div>
       <div className="progress-track">

@@ -1,55 +1,42 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { getTodo } from '../api.js'
+import { useTodos } from '../context/TodoContext'
+import { useTodo } from '../hooks/useTodo'
 import './TodoDetail.css'
 
-function TodoDetail({ onUpdate, onDelete }) {
+function TodoDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { updateTodo, deleteTodo } = useTodos()
 
-  // data, loading, error for this page
-  const [todo, setTodo] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  // this one todo comes from our own hook (fetched by id, works after refresh)
+  const { todo, loading, error } = useTodo(id)
 
   // the edit form
   const [text, setText] = useState('')
   const [priority, setPriority] = useState('Medium')
   const [completed, setCompleted] = useState(false)
 
-  // fetch this one todo by id - works after a refresh too
+  // fill the form when the todo arrives
   useEffect(() => {
-    async function loadTodo() {
-      try {
-        setLoading(true)
-        setError(null)
-        const data = await getTodo(id)
-        setTodo(data)
-        setText(data.text)
-        setPriority(data.priority)
-        setCompleted(data.completed)
-      } catch (err) {
-        setTodo(null)
-        setError('Could not load this todo. It may not exist, or json-server is not running.')
-      } finally {
-        setLoading(false)
-      }
+    if (todo) {
+      setText(todo.text)
+      setPriority(todo.priority)
+      setCompleted(todo.completed)
     }
-
-    loadTodo()
-  }, [id])
+  }, [todo])
 
   async function handleSubmit(e) {
     e.preventDefault()
     const trimmed = text.trim()
     if (trimmed === '') return
 
-    const updated = await onUpdate(id, { text: trimmed, priority, completed })
+    const updated = await updateTodo(id, { text: trimmed, priority, completed })
     if (updated) navigate('/') // go back only after the server said OK
   }
 
   async function handleDelete() {
-    const deleted = await onDelete(id)
+    const deleted = await deleteTodo(id)
     if (deleted) navigate('/')
   }
 

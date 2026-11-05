@@ -1,50 +1,32 @@
+import { useState } from 'react'
 import Progress from '../components/Progress'
-import TaskList from '../components/TaskList'
 import TaskForm from '../components/TaskForm'
 import SearchBar from '../components/SearchBar'
+import TaskList from '../components/TaskList'
 import Footer from '../components/Footer'
+import { useTodos } from '../context/TodoContext'
 
-function TodoPage({ tasks,
-    filter,
-    error,
-    loading,
-    onQueryChange,
-    onAdd,
-    query,
-    onToggle,
-    onEdit,
-    onClear,
-    onDelete,}){
+// One page used by "/", "/active" and "/completed".
+// The "filter" prop comes from the route.
+function TodoPage({ filter }) {
+  const { todos, loading, error } = useTodos()
+  const [query, setQuery] = useState('') // only this page needs the search text
 
-        const search = query.trim().toLowerCase()
-        const visibleTasks = tasks.filter((task) => {
-            if(filter === 'Active' && task.completed) return false
-            if (filter === 'Completed' && !task.completed) return false
-            return task.text.toLowerCase().includes(search) 
-        })
-        const remaining = tasks.filter((tasks) => !tasks.completed).length
-        const done = tasks.length - remaining
-        const showList = !loading && !(error && tasks.length ===0)
-        return (
-            <>
-                <Progress done = {done} total = {tasks.length} />
-                <TaskForm onAdd = {onAdd} />
-                <SearchBar query = {query} onChange = {onQueryChange}/>
+  // hide the list when loading, or when loading failed (nothing to show)
+  const showList = !loading && !(error && todos.length === 0)
 
-                {loading && <p className="status"> Loading....</p>}
-                {showList && (
-                    <TaskList
-                    tasks = {visibleTasks}
-                    filter = {filter}
-                    searching = {search !== ''}
-                    onToggle = {onToggle}
-                    onDelete = {onDelete}
-                    onEdit = {onEdit}
-                />                
-                )}
-            
-            <Footer remaining = {remaining} onClear = {onClear} />
-            </>
-        )
-    }
+  return (
+    <>
+      <Progress />
+      <TaskForm />
+      <SearchBar query={query} onChange={setQuery} />
+
+      {loading && <p className="status">Loading…</p>}
+      {showList && <TaskList filter={filter} query={query} />}
+
+      <Footer />
+    </>
+  )
+}
+
 export default TodoPage

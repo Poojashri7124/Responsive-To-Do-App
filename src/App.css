@@ -41,3 +41,129 @@
     border-radius: 10px;
   }
 }
+/* ---------- Dark theme ---------- */
+/* When <body> has the class "dark", these rules replace the light colours */
+
+body.dark {
+  background: #121120;
+  color: #ecebff;
+}
+
+.dark .app,
+.dark .card {
+  background: #1c1b2e;
+}
+
+.dark .header {
+  background: #5b52f0;
+}
+
+/* tabs */
+.dark .tabs {
+  border-bottom-color: #2c2a48;
+}
+
+.dark .tab {
+  color: #a6a3c7;
+}
+
+.dark .tab-active {
+  background: #2d2a55;
+  color: #a5a0ff;
+}
+
+/* inputs */
+.dark .task-input,
+.dark .task-select,
+.dark .search-input,
+.dark .task-edit,
+.dark .detail-input {
+  background: #26243d;
+  color: #ecebff;
+  border-color: #3a3860;
+}
+
+/* progress and small texts */
+.dark .progress-track {
+  background: #2d2a55;
+}
+
+.dark .progress-info,
+.dark .footer-count,
+.dark .status,
+.dark .task-empty {
+  color: #a6a3c7;
+}
+
+.dark .footer-clear {
+  color: #a5a0ff;
+}
+
+/* task rows */
+.dark .task-item {
+  border-bottom-color: #2c2a48;
+}
+
+.dark .task-check {
+  background: #26243d;
+  border-color: #5a577f;
+}
+
+.dark .task-check:checked {
+  background: #5b52f0;
+  border-color: #5b52f0;
+}
+
+.dark .task-done {
+  color: #6f6c96;
+}
+
+/* stats page */
+.dark .stats-box {
+  background: #26243d;
+}
+
+.dark .stats-number {
+  color: #a5a0ff;
+}
+
+.dark .stats-label {
+  color: #a6a3c7;
+}
+
+.dark .stats-title,
+.dark .stats-count {
+  color: #ecebff;
+}
+
+.dark .stats-row {
+  border-bottom-color: #2c2a48;
+}
+
+/* detail page and 404 page */
+.dark .detail-back,
+.dark .notfound-code,
+.dark .notfound-link {
+  color: #a5a0ff;
+}
+
+.dark .detail-title,
+.dark .detail-check {
+  color: #ecebff;
+}
+
+.dark .detail-label,
+.dark .notfound-text {
+  color: #a6a3c7;
+}
+
+.dark .detail-delete {
+  background: #1c1b2e;
+}
+
+/* on mobile the page behind the card is darker than the card */
+@media (max-width: 768px) {
+  .dark .app {
+    background: #121120;
+  }
+}

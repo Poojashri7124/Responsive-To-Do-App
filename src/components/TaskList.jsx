@@ -1,3 +1,4 @@
+import { useTodos } from '../context/TodoContext'
 import TaskItem from './TaskItem'
 import './TaskList.css'
 
@@ -7,24 +8,33 @@ const emptyMessages = {
   Completed: 'No completed tasks yet.',
 }
 
-function TaskList({ tasks, filter, searching, onToggle, onDelete, onEdit }) {
-  if (tasks.length === 0) {
-    const message = searching ? 'No tasks match your search.' : emptyMessages[filter]
+// filter comes from the route, query from the search box
+function TaskList({ filter, query }) {
+  const { todos } = useTodos()
+
+  // calculated while rendering - no second state
+  const search = query.trim().toLowerCase()
+
+  const visibleTodos = todos.filter((todo) => {
+    if (filter === 'Active' && todo.completed) return false
+    if (filter === 'Completed' && !todo.completed) return false
+    return todo.text.toLowerCase().includes(search)
+  })
+
+  if (visibleTodos.length === 0) {
+    const message = search !== '' ? 'No tasks match your search.' : emptyMessages[filter]
     return <p className="task-empty">{message}</p>
   }
 
   return (
     <ul className="task-list">
-      {tasks.map((task) => (
+      {visibleTodos.map((todo) => (
         <TaskItem
-          key={task.id}
-          id={task.id}
-          text={task.text}
-          priority={task.priority}
-          completed={task.completed}
-          onToggle={() => onToggle(task.id)}
-          onDelete={() => onDelete(task.id)}
-          onEdit={(newText) => onEdit(task.id, newText)}
+          key={todo.id}
+          id={todo.id}
+          text={todo.text}
+          priority={todo.priority}
+          completed={todo.completed}
         />
       ))}
     </ul>

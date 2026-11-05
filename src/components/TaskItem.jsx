@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTodos } from '../context/TodoContext'
 import './TaskItem.css'
 
-function TaskItem({ id, text, priority, completed, onToggle, onDelete, onEdit }) {
+function TaskItem({ id, text, priority, completed }) {
+  const { toggleTodo, updateTodo, deleteTodo } = useTodos()
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState(text)
 
@@ -18,8 +20,8 @@ function TaskItem({ id, text, priority, completed, onToggle, onDelete, onEdit })
       setIsEditing(false)
       return
     }
-    const saved = await onEdit(trimmed)
-    if (saved) setIsEditing(false) // close only after the server said OK
+    const updated = await updateTodo(id, { text: trimmed })
+    if (updated) setIsEditing(false) // close only after the server said OK
   }
 
   function handleKeyDown(e) {
@@ -33,7 +35,7 @@ function TaskItem({ id, text, priority, completed, onToggle, onDelete, onEdit })
         className="task-check"
         type="checkbox"
         checked={completed}
-        onChange={onToggle}
+        onChange={() => toggleTodo(id)}
         aria-label={text}
       />
 
@@ -70,7 +72,7 @@ function TaskItem({ id, text, priority, completed, onToggle, onDelete, onEdit })
         className="task-delete"
         type="button"
         aria-label="Delete task"
-        onClick={onDelete}
+        onClick={() => deleteTodo(id)}
       >
         🗑
       </button>
