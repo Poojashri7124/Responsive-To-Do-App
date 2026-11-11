@@ -1,106 +1,100 @@
-
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { useTodos } from '../context/TodoContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectAllTodos, updateTodo, deleteTodo } from '../features/todos/todoSlice'
 import { useTodo } from '../hooks/useTodo'
+import { validate } from '../utils/validateTodo.js'
+
+const fieldClass =
+  'h-11 rounded-[10px] border bg-white px-4 text-[15px] text-[#1e1b3a] focus:outline-none dark:bg-[#26243d] dark:text-[#ecebff] dark:[color-scheme:dark]'
+const labelClass = 'mt-3 mb-1.5 text-sm text-[#6b6890] dark:text-[#a6a3c7]'
+// always takes its space, so the Save button never jumps when an error appears
+const errorClass = 'mt-1 min-h-5 text-[13px] text-red-600 dark:text-[#ff8d98]'
+
+function borderClass(hasError) {
+  return hasError
+    ? 'border-red-500'
+    : 'border-[#d9d6f5] focus:border-[#6366f1] dark:border-[#3a3860]'
+}
 
 function TodoDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { updateTodo, deleteTodo } = useTodos()
+  const dispatch = useDispatch()
+  const todos = useSelector(selectAllTodos)
 
+  // this one todo comes from our own hook (fetched by id, works after refresh)
   const { todo, loading, error } = useTodo(id)
 
-  const [text, setText] = useState('')
-  const [priority, setPriority] = useState('Medium')
-  const [completed, setCompleted] = useState(false)
-  const [dueDate, setDueDate] = useState('')
+  // the edit form + its errors
+  const [form, setForm] = useState({ text: '', priority: 'Medium', dueDate: '', completed: false })
   const [errors, setErrors] = useState({})
-  const [isSaving, setIsSaving] = useState(false)
+  const [saving, setSaving] = useState(false)
 
+  // fill the form when the todo arrives
   useEffect(() => {
     if (todo) {
-      setText(todo.text)
-      setPriority(todo.priority)
-      setCompleted(todo.completed)
-      setDueDate(todo.dueDate || '')
-      setError({})
+      setForm({
+        text: todo.text,
+        priority: todo.priority,
+        dueDate: todo.dueDate || '',
+        completed: todo.completed,
+      })
     }
   }, [todo])
 
-  const today = new Date()
-  const minDate = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, '0'),
-    String(today.getDate()).padStart(2, '0'),
-  
-  ].join('-')
+  function handleChange(e) {
+    const { name, value, type, checked } = e.target
+    setForm({ ...form, [name]: type === 'checkbox' ? checked : value })
+  }
 
-  function validate(form){
-    const newErrors = {}
-    if (form.text.trim().length < 3){
-      newErrors.text = 'Task must contain at least 3 characters'
-    }
-    if (form.dueDate && form.dueDate < minDate){
-      newErrors.duedate = 'Due date cannot be in the past'
-    }
-    return newErrors
+  function handleBlur(e) {
+    const { name } = e.target
+    const found = validate(form, todos, todo)
+    setErrors({ ...errors, [name]: found[name] })
   }
-  function handleBlur(field){
-    const form = {text, priority, completed, dueDate}
-    const validationErrors = validate(form)
-    seterrors((prev) => {
-      const updated = {...prev}
-      if (validationerrors[field]){
-        update[field] = validationErrors[field]
-      }
-      else{
-        delete updated[field]
-      }
-      return updated
-    })
-  }
-//example commit in new branch
+
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const trimmed = text.trim()
+    const found = validate(form, todos, todo)
+    setErrors(found)
+    if (Object.keys(found).length > 0) return
 
-    if (trimmed.length < 3) {
-      alert('Task must contain at least 3 characters.')
-      return
+    setSaving(true)
+    try {
+      await dispatch(
+        updateTodo({
+          id,
+          changes: {
+            text: form.text.trim(),
+            priority: form.priority,
+            dueDate: form.dueDate,
+            completed: form.completed,
+          },
+        })
+      ).unwrap()
+
+      navigate('/') // go back only after the server said OK
+    } catch (err) {
+      // failed: stay here (the error banner is shown by App)
+    } finally {
+      setSaving(false)
     }
-
-    const today = new Date()
-    const todayString = [
-      today.getFullYear(),
-      String(today.getMonth() + 1).padStart(2, '0'),
-      String(today.getDate()).padStart(2, '0'),
-    ].join('-')
-
-    if (dueDate && dueDate < todayString) {
-      alert('Due date cannot be in the past.')
-      return
-    }
-
-    const updated = await updateTodo(id, {
-      text: trimmed,
-      priority,
-      completed,
-      dueDate,
-    })
-
-    if (updated) navigate('/')
   }
 
   async function handleDelete() {
-    const deleted = await deleteTodo(id)
-    if (deleted) navigate('/')
+    try {
+      await dispatch(deleteTodo(id)).unwrap()
+      navigate('/')
+    } catch (err) {
+      // failed: stay here (the error banner is shown by App)
+    }
   }
 
   if (loading) {
     return (
-      <p className="py-6 text-center text-gray-500 dark:text-gray-400">
+      <p className="px-6.5 py-[30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
         Loading…
       </p>
     )
@@ -108,13 +102,11 @@ function TodoDetail() {
 
   if (error || !todo) {
     return (
-      <div className="space-y-4">
-        <p className="text-red-500">{error || 'Todo not found.'}</p>
-
-        <Link
-          to="/"
-          className="inline-block text-indigo-600 hover:underline dark:text-indigo-400"
-        >
+      <div className="flex max-w-[560px] flex-col px-6.5 pt-[22px] pb-7 md:px-8">
+        <p className="mb-3.5 rounded-[10px] bg-[#fde2e4] px-3.5 py-3 text-[15px] text-[#d62839] dark:bg-[#43202a] dark:text-[#ff8d98]">
+          {error}
+        </p>
+        <Link className="text-sm text-[#4f46e5] dark:text-[#a5a0ff]" to="/">
           ← Back to my tasks
         </Link>
       </div>
@@ -123,95 +115,72 @@ function TodoDetail() {
 
   return (
     <form
-      className="mx-auto w-full max-w-xl space-y-5 rounded-xl bg-gray-50 p-5 dark:bg-gray-800 sm:p-6"
+      noValidate
       onSubmit={handleSubmit}
+      className="flex max-w-[560px] flex-col px-6.5 pt-[22px] pb-7 md:px-8"
     >
-      <Link
-        to="/"
-        className="inline-block text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
-      >
+      <Link className="text-sm text-[#4f46e5] dark:text-[#a5a0ff]" to="/">
         ← Back to my tasks
       </Link>
+      <h2 className="mt-4 mb-2.5 text-xl font-bold">Todo details</h2>
 
-      <h2 className="text-xl font-bold text-gray-800 dark:text-white">
-        Todo details
-      </h2>
+      <label className={labelClass} htmlFor="detail-text">Task</label>
+      <input
+        id="detail-text"
+        className={`${fieldClass} ${borderClass(errors.text)}`}
+        type="text"
+        name="text"
+        value={form.text}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      <p className={errorClass}>{errors.text}</p>
 
-      <div className="space-y-2">
-        <label
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          htmlFor="detail-text"
-        >
-          Task
-        </label>
+      <label className={labelClass} htmlFor="detail-priority">Priority</label>
+      <select
+        id="detail-priority"
+        className={`${fieldClass} ${borderClass(false)}`}
+        name="priority"
+        value={form.priority}
+        onChange={handleChange}
+      >
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
 
-        <input
-          id="detail-text"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none focus:border-indigo-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-      </div>
+      <label className={labelClass} htmlFor="detail-date">Due date</label>
+      <input
+        id="detail-date"
+        className={`${fieldClass} ${borderClass(errors.dueDate)}`}
+        type="date"
+        name="dueDate"
+        value={form.dueDate}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      <p className={errorClass}>{errors.dueDate}</p>
 
-      <div className="space-y-2">
-        <label
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          htmlFor="detail-priority"
-        >
-          Priority
-        </label>
-
-        <select
-          id="detail-priority"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none focus:border-indigo-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-        >
-          <option>High</option>
-          <option>Medium</option>
-          <option>Low</option>
-        </select>
-      </div>
-
-      <div className="space-y-2">
-        <label
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          htmlFor="detail-date"
-        >
-          Due date
-        </label>
-
-        <input
-          id="detail-date"
-          type="date"
-          min={new Date().toLocaleDateString('en-CA')}
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none focus:border-indigo-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
-        />
-      </div>
-
-      <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+      <label className="mt-4 flex items-center gap-2 text-[15px]">
         <input
           type="checkbox"
-          checked={completed}
-          onChange={(e) => setCompleted(e.target.checked)}
-          className="h-4 w-4 accent-indigo-600"
+          name="completed"
+          checked={form.completed}
+          onChange={handleChange}
         />
         Completed
       </label>
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="mt-[22px] flex gap-2.5">
         <button
-          className="flex-1 rounded-lg bg-indigo-600 px-5 py-3 font-medium text-white hover:bg-indigo-700"
+          className="h-11 cursor-pointer rounded-[10px] bg-[#4f46e5] px-[22px] text-[15px] font-bold text-white hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#5b52f0]"
           type="submit"
+          disabled={saving}
         >
-          Save
+          {saving ? 'Saving…' : 'Save'}
         </button>
-
         <button
-          className="flex-1 rounded-lg bg-red-500 px-5 py-3 font-medium text-white hover:bg-red-600"
+          className="h-11 cursor-pointer rounded-[10px] border border-[#f3b7bd] bg-white px-[22px] text-[15px] font-bold text-[#d62839] dark:bg-[#1c1b2e]"
           type="button"
           onClick={handleDelete}
         >

@@ -1,18 +1,18 @@
 {
   "todos": [
     {
-      "text": "gihub",
-      "priority": "High",
-      "dueDate": "2026-11-19",
-      "completed": false,
-      "id": "4QAO-3nONWo"
+      "text": "dfsf",
+      "priority": "Low",
+      "dueDate": "2026-11-25",
+      "completed": true,
+      "id": "hhS4S_LABvA"
     },
     {
-      "text": "workspace . features",
-      "priority": "Low",
-      "dueDate": "2026-11-12",
-      "completed": false,
-      "id": "v71mjkt2Iug"
+      "text": "htrhr",
+      "priority": "Medium",
+      "dueDate": "2026-11-22",
+      "completed": true,
+      "id": "p8UPVdRn8sQ"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

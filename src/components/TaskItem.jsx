@@ -1,30 +1,17 @@
-
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useTodos } from '../context/TodoContext'
+import { useDispatch } from 'react-redux'
+import { toggleTodo, updateTodo, deleteTodo } from '../features/todos/todoSlice'
+import { priorityColors } from '../utils/priorityColors'
+import { getToday, formatDate } from '../utils/date'
 
-function TaskItem({
-  id,
-  text,
-  priority,
-  completed,
-  dueDate,
-}) {
-  const { toggleTodo, updateTodo, deleteTodo } = useTodos()
-
+function TaskItem({ id, text, priority, completed, dueDate }) {
+  const dispatch = useDispatch()
   const [isEditing, setIsEditing] = useState(false)
   const [draft, setDraft] = useState(text)
 
-  // Check whether the task is overdue
-  const today = new Date()
-  const todayString = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, '0'),
-    String(today.getDate()).padStart(2, '0'),
-  ].join('-')
-
-  const isOverdue =
-    dueDate && dueDate < todayString && !completed
+  // overdue = has a due date, it is before today, and the task is not done
+  const overdue = dueDate && !completed && dueDate < getToday()
 
   function startEditing() {
     setDraft(text)
@@ -33,15 +20,17 @@ function TaskItem({
 
   async function saveEdit() {
     const trimmed = draft.trim()
-
+    // empty or unchanged -> just close, no request
     if (trimmed === '' || trimmed === text) {
       setIsEditing(false)
       return
     }
-
-    const updated = await updateTodo(id, { text: trimmed })
-
-    if (updated) setIsEditing(false)
+    try {
+      await dispatch(updateTodo({ id, changes: { text: trimmed } })).unwrap()
+      setIsEditing(false) // close only after the server said OK
+    } catch (err) {
+      // failed: stay in edit mode (the error banner is shown by App)
+    }
   }
 
   function handleKeyDown(e) {
@@ -50,36 +39,30 @@ function TaskItem({
   }
 
   return (
-    <li className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800 sm:gap-4 sm:p-4">
-
-      {/* Complete checkbox */}
+    <li className="flex items-center gap-3 border-b border-[#f1f0fa] py-3.5 dark:border-[#2c2a48]">
       <input
+        className="grid h-[18px] w-[18px] shrink-0 cursor-pointer appearance-none place-content-center rounded-[5px] border-[1.5px] border-[#b9b5e6] bg-white checked:border-[#4f46e5] checked:bg-[#4f46e5] checked:after:text-xs checked:after:leading-none checked:after:text-white checked:after:content-['✓'] dark:border-[#5a577f] dark:bg-[#26243d] dark:checked:border-[#5b52f0] dark:checked:bg-[#5b52f0]"
         type="checkbox"
         checked={completed}
-        onChange={() => toggleTodo(id)}
+        onChange={() => dispatch(toggleTodo(id))}
         aria-label={text}
-        className="h-5 w-5 shrink-0 cursor-pointer accent-indigo-600"
       />
 
-      {/* Task text */}
       <div className="min-w-0 flex-1">
-
         {isEditing ? (
           <input
+            className="h-[34px] w-full min-w-0 rounded-lg border border-[#4f46e5] bg-white px-2.5 text-sm text-[#1e1b3a] outline-none md:text-[15px] dark:bg-[#26243d] dark:text-[#ecebff]"
             type="text"
             value={draft}
             autoFocus
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={handleKeyDown}
-            onBlur={saveEdit}
-            className="w-full rounded-lg border border-indigo-400 bg-white p-2 text-sm text-gray-800 outline-none focus:ring-2 focus:ring-indigo-200 dark:bg-gray-700 dark:text-white"
+            onBlur={() => setIsEditing(false)}
           />
         ) : (
           <span
-            className={`break-words text-sm sm:text-base ${
-              completed
-                ? 'text-gray-400 line-through'
-                : 'text-gray-800 dark:text-gray-100'
+            className={`block text-sm leading-[21px] wrap-anywhere md:text-[15px] ${
+              completed ? 'text-[#a9a6c8] line-through dark:text-[#6f6c96]' : ''
             }`}
             onDoubleClick={startEditing}
             title="Double-click to edit"
@@ -88,50 +71,38 @@ function TaskItem({
           </span>
         )}
 
-        {/* Due date */}
         {dueDate && (
           <p
-            className={`mt-1 text-xs ${
-              isOverdue
-                ? 'font-semibold text-red-500'
-                : 'text-gray-500 dark:text-gray-400'
+            className={`mt-0.5 text-xs ${
+              overdue
+                ? 'font-semibold text-red-600 dark:text-[#ff8d98]'
+                : 'text-[#8a86a8] dark:text-[#a6a3c7]'
             }`}
           >
-            Due: {dueDate}
-            {isOverdue && ' (Overdue)'}
+            Due {formatDate(dueDate)}
+            {overdue && ' · Overdue'}
           </p>
         )}
       </div>
 
-      {/* Priority badge */}
       <span
-        className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
-          priority === 'High'
-            ? 'bg-red-100 text-red-700'
-            : priority === 'Medium'
-              ? 'bg-yellow-100 text-yellow-700'
-              : 'bg-green-100 text-green-700'
-        }`}
+        className={`shrink-0 rounded-full px-3 py-0.5 text-[11px] leading-[18px] font-bold ${priorityColors[priority]}`}
       >
         {priority}
       </span>
-
-      {/* View details */}
       <Link
+        className="shrink-0 text-xl leading-none text-[#8a86a8] hover:text-[#4f46e5]"
         to={`/todo/${id}`}
         aria-label="View details"
         title="View details"
-        className="shrink-0 text-xl font-bold text-indigo-600 transition hover:text-indigo-800 dark:text-indigo-400"
       >
         ›
       </Link>
-
-      {/* Delete */}
       <button
+        className="shrink-0 cursor-pointer text-[13px] opacity-45 hover:opacity-80 md:text-[15px]"
         type="button"
         aria-label="Delete task"
-        onClick={() => deleteTodo(id)}
-        className="shrink-0 rounded-lg px-2 py-1 text-red-500 transition hover:bg-red-100 dark:hover:bg-red-900/30"
+        onClick={() => dispatch(deleteTodo(id))}
       >
         🗑
       </button>

@@ -1,4 +1,5 @@
-
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import FilterTabs from './components/FilterTabs'
@@ -6,7 +7,7 @@ import TodoPage from './pages/TodoPage'
 import Stats from './pages/Stats'
 import TodoDetail from './pages/TodoDetail'
 import NotFound from './pages/NotFound'
-import { useTodos } from './context/TodoContext'
+import { fetchTodos, selectTodosError } from './features/todos/todoSlice'
 
 const tabs = [
   { label: 'All', to: '/', end: true },
@@ -16,38 +17,29 @@ const tabs = [
 ]
 
 function App() {
-  const { error } = useTodos()
+  const dispatch = useDispatch()
+  const error = useSelector(selectTodosError)
 
-  // Get current date dynamically
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+  // GET when the app opens
+  useEffect(() => {
+    dispatch(fetchTodos())
+  }, [dispatch])
 
   return (
-    <div className="min-h-screen bg-[#ecebff] px-4 py-8 text-[#1e1b3a] dark:bg-gray-950 dark:text-white sm:px-6 md:px-8">
+    // mobile: page has a margin, desktop (md:) fills the whole screen
+    <div className="min-h-screen bg-[#ecebff] p-[15px_17px] md:bg-white md:p-0 dark:bg-[#121120] dark:md:bg-[#1c1b2e]">
+      <div className="mx-auto flex max-w-[480px] flex-col overflow-hidden rounded-3xl bg-white shadow-[0_18px_45px_rgba(79,70,229,0.16)] md:min-h-screen md:max-w-none md:rounded-none md:shadow-none dark:bg-[#1c1b2e]">
+        <Header title="My Tasks" date="Saturday, 31 October 2026" />
 
-      {/* Main card */}
-      <div className="mx-auto w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-lg dark:bg-gray-900">
-
-        {/* Header */}
-        <Header title="My Tasks" date={today} />
-
-        {/* Main content */}
-        <div className="p-4 sm:p-6 md:p-8">
-
+        <div className="mx-auto w-full max-w-[1000px] flex-1">
           <FilterTabs tabs={tabs} />
 
-          {/* Error message */}
           {error && (
-            <p className="my-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+            <p className="mx-6.5 my-4 rounded-[10px] bg-[#fde2e4] px-3.5 py-3 text-left text-[15px] text-[#d62839] md:mx-8 dark:bg-[#43202a] dark:text-[#ff8d98]">
               {error}
             </p>
           )}
 
-          {/* Application routes */}
           <Routes>
             <Route path="/" element={<TodoPage filter="All" />} />
             <Route path="/active" element={<TodoPage filter="Active" />} />
@@ -56,7 +48,6 @@ function App() {
             <Route path="/todo/:id" element={<TodoDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-
         </div>
       </div>
     </div>

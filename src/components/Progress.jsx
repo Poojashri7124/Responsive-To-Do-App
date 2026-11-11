@@ -1,27 +1,20 @@
-
-import { useTodos } from '../context/TodoContext'
-import { useTodoStats } from '../hooks/useTodoStats'
+import { useSelector } from 'react-redux'
+import { selectTodoStats } from '../features/todos/todoSlice'
 
 function Progress() {
-  const { todos } = useTodos()
-  const { completed, total, percent } = useTodoStats(todos)
+  const { completed, total, percent } = useSelector(selectTodoStats)
 
   return (
-    <div className="rounded-xl bg-indigo-50 p-4 dark:bg-gray-800">
-      {/* Progress information */}
-      <div className="mb-3 flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-200">
+    <div className="px-6.5 pt-5 md:px-8">
+      <div className="mb-2 flex justify-between text-[13px] text-[#6b6890] dark:text-[#a6a3c7]">
         <span>Progress</span>
-
         <span>
           {completed} of {total} done · {percent}%
         </span>
       </div>
-
-      {/* Progress bar background */}
-      <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-        {/* Progress bar fill */}
+      <div className="h-2 overflow-hidden rounded-full bg-[#eeedff] dark:bg-[#2d2a55]">
         <div
-          className="h-full rounded-full bg-indigo-600 transition-all duration-500"
+          className="h-full rounded-full bg-[#4f46e5] transition-[width] duration-300"
           style={{ width: `${percent}%` }}
         />
       </div>

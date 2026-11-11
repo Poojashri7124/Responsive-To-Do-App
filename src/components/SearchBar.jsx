@@ -1,14 +1,13 @@
-
 function SearchBar({ query, onChange }) {
   return (
-    <div className="w-full">
+    <div className="px-6.5 pb-4 md:px-8">
       <input
+        className="h-11 w-full rounded-[10px] border border-[#d9d6f5] bg-white px-4 text-[15px] text-[#1e1b3a] placeholder:text-[#8a86a8] focus:border-[#6366f1] focus:outline-none dark:border-[#3a3860] dark:bg-[#26243d] dark:text-[#ecebff]"
         type="search"
         placeholder="Search tasks"
         value={query}
         onChange={(e) => onChange(e.target.value)}
         aria-label="Search tasks"
-        className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500 dark:focus:ring-indigo-900"
       />
     </div>
   )

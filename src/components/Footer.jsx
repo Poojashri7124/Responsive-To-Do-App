@@ -1,23 +1,19 @@
-
-import { useTodos } from '../context/TodoContext'
-import { useTodoStats } from '../hooks/useTodoStats'
+import { useDispatch, useSelector } from 'react-redux'
+import { clearCompleted, selectTodoStats } from '../features/todos/todoSlice'
 
 function Footer() {
-  const { todos, clearCompleted } = useTodos()
-  const { pending } = useTodoStats(todos)
+  const dispatch = useDispatch()
+  const { pending } = useSelector(selectTodoStats)
 
   return (
-    <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-4 dark:border-gray-700">
-      {/* Pending task count */}
-      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+    <footer className="flex items-center justify-between px-6.5 py-5 md:px-8">
+      <span className="text-[13px] text-[#6b6890] md:text-sm dark:text-[#a6a3c7]">
         {pending} {pending === 1 ? 'task' : 'tasks'} left
       </span>
-
-      {/* Clear completed button */}
       <button
-        className="rounded-lg px-3 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950"
+        className="cursor-pointer text-sm text-[#4f46e5] md:text-[15px] dark:text-[#a5a0ff]"
         type="button"
-        onClick={clearCompleted}
+        onClick={() => dispatch(clearCompleted())}
       >
         Clear completed
       </button>

@@ -1,93 +1,60 @@
+import { useSelector } from 'react-redux'
+import { selectTodoStats, selectTodosStatus } from '../features/todos/todoSlice'
+import { priorityColors } from '../utils/priorityColors'
 
-import { useTodos } from '../context/TodoContext'
-import { useTodoStats } from '../hooks/useTodoStats'
+const boxClass = 'flex flex-col gap-0.5 rounded-xl bg-[#f5f4ff] p-4 dark:bg-[#26243d]'
+const numberClass = 'text-[28px] font-bold text-[#4f46e5] dark:text-[#a5a0ff]'
+const labelClass = 'text-sm text-[#6b6890] dark:text-[#a6a3c7]'
 
 function Stats() {
-  const { todos, loading } = useTodos()
-  const { total, completed, pending, percent, byPriority } = useTodoStats(todos)
+  const status = useSelector(selectTodosStatus)
+  const { total, completed, pending, percent, byPriority } = useSelector(selectTodoStats)
 
-  if (loading) {
+  if (status === 'idle' || status === 'loading') {
     return (
-      <p className="py-6 text-center text-gray-500 dark:text-gray-400">
+      <p className="px-6.5 py-[30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
         Loading…
       </p>
     )
   }
 
   return (
-    <div className="space-y-6">
-
-      {/* Statistics cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-xl bg-indigo-50 p-5 text-center dark:bg-indigo-950">
-          <span className="block text-3xl font-bold text-indigo-600 dark:text-indigo-400">
-            {total}
-          </span>
-          <span className="text-sm text-gray-600 dark:text-gray-300">
-            Total
-          </span>
+    <div className="px-6.5 pt-5 pb-7 md:px-8">
+      <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-3">
+        <div className={boxClass}>
+          <span className={numberClass}>{total}</span>
+          <span className={labelClass}>Total</span>
         </div>
-
-        <div className="rounded-xl bg-green-50 p-5 text-center dark:bg-green-950">
-          <span className="block text-3xl font-bold text-green-600 dark:text-green-400">
-            {completed}
-          </span>
-          <span className="text-sm text-gray-600 dark:text-gray-300">
-            Completed
-          </span>
+        <div className={boxClass}>
+          <span className={numberClass}>{completed}</span>
+          <span className={labelClass}>Completed</span>
         </div>
-
-        <div className="rounded-xl bg-orange-50 p-5 text-center dark:bg-orange-950">
-          <span className="block text-3xl font-bold text-orange-600 dark:text-orange-400">
-            {pending}
-          </span>
-          <span className="text-sm text-gray-600 dark:text-gray-300">
-            Pending
-          </span>
+        <div className={boxClass}>
+          <span className={numberClass}>{pending}</span>
+          <span className={labelClass}>Pending</span>
         </div>
-
-        <div className="rounded-xl bg-purple-50 p-5 text-center dark:bg-purple-950">
-          <span className="block text-3xl font-bold text-purple-600 dark:text-purple-400">
-            {percent}%
-          </span>
-          <span className="text-sm text-gray-600 dark:text-gray-300">
-            Done
-          </span>
+        <div className={boxClass}>
+          <span className={numberClass}>{percent}%</span>
+          <span className={labelClass}>Done</span>
         </div>
       </div>
 
-      {/* Priority statistics */}
-      <section className="rounded-xl bg-gray-50 p-5 dark:bg-gray-800">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">
-          By priority
-        </h2>
-
-        <ul className="space-y-3">
-          {byPriority.map((item) => (
-            <li
-              key={item.name}
-              className="flex items-center justify-between rounded-lg bg-white p-3 dark:bg-gray-700"
+      <h2 className="mt-6 mb-2 text-[15px] font-semibold">By priority</h2>
+      <ul>
+        {byPriority.map((item) => (
+          <li
+            key={item.name}
+            className="flex items-center justify-between border-b border-[#f1f0fa] py-3 dark:border-[#2c2a48]"
+          >
+            <span
+              className={`rounded-full px-3 py-0.5 text-[11px] leading-[18px] font-bold ${priorityColors[item.name]}`}
             >
-              <span
-                className={`rounded-full px-3 py-1 text-sm font-medium ${
-                  item.name === 'High'
-                    ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
-                    : item.name === 'Medium'
-                    ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300'
-                    : 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300'
-                }`}
-              >
-                {item.name}
-              </span>
-
-              <span className="font-semibold text-gray-800 dark:text-white">
-                {item.count}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
+              {item.name}
+            </span>
+            <span className="text-base font-semibold">{item.count}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

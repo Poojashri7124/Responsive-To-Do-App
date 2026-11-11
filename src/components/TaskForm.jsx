@@ -1,203 +1,129 @@
-
 import { useState } from 'react'
-import { useTodos } from '../context/TodoContext'
+import { useDispatch, useSelector } from 'react-redux'
+import { addTodo, selectAllTodos } from '../features/todos/todoSlice'
+import { validate } from '../utils/validateTodo.js'
+import { getToday } from '../utils/date'
+
+const emptyForm = { text: '', priority: 'Medium', dueDate: '' }
+
+// shared look of the three fields
+const fieldClass =
+  'h-11 min-w-0 rounded-[10px] border bg-white px-4 text-[15px] text-[#1e1b3a] placeholder:text-[#8a86a8] focus:outline-none dark:bg-[#26243d] dark:text-[#ecebff] dark:[color-scheme:dark]'
+
+// The error line always takes its space (min-h-5), even when it is empty.
+// If it appeared / disappeared, the layout would jump and a click on the
+// Add button could be lost.
+const errorClass = 'mt-1 min-h-5 text-[13px] text-red-600 dark:text-[#ff8d98]'
+
+// red border when the field has an error
+function borderClass(hasError) {
+  return hasError
+    ? 'border-red-500'
+    : 'border-[#d9d6f5] focus:border-[#6366f1] dark:border-[#3a3860]'
+}
 
 function TaskForm() {
-  const { addTodo, todos } = useTodos()
-
-  const [form, setForm] = useState({
-    text: '',
-    priority: 'Medium',
-    dueDate: '',
-  })
-
+  const dispatch = useDispatch()
+  const todos = useSelector(selectAllTodos)
+  const [form, setForm] = useState(emptyForm)
   const [errors, setErrors] = useState({})
-  const [isSaving, setIsSaving] = useState(false)
+  const [saving, setSaving] = useState(false)
 
-  // Get today's date in local format
-  const today = new Date()
-  const minDate = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, '0'),
-    String(today.getDate()).padStart(2, '0'),
-  ].join('-')
-
-  // Validate form fields
-  function validate(form) {
-    const newErrors = {}
-    const trimmedText = form.text.trim()
-
-    if (!trimmedText) {
-      newErrors.text = 'Task is required'
-    } else if (trimmedText.length < 3) {
-      newErrors.text = 'Task must be at least 3 characters'
-    } else if (
-      todos.some(
-        (todo) =>
-          todo.text.trim().toLowerCase() ===
-          trimmedText.toLowerCase()
-      )
-    ) {
-      newErrors.text = 'This task already exists'
-    }
-
-    if (form.dueDate && form.dueDate < minDate) {
-      newErrors.dueDate = 'Due date cannot be in the past'
-    }
-
-    return newErrors
-  }
-
-  // Handle input changes
+  // controlled inputs: every field is stored in "form"
   function handleChange(e) {
     const { name, value } = e.target
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: '',
-    }))
+    setForm({ ...form, [name]: value })
   }
 
-  // Validate when leaving a field
+  // when the user leaves a field, check it
   function handleBlur(e) {
     const { name } = e.target
-    const validationErrors = validate(form)
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: validationErrors[name] || '',
-    }))
+    const found = validate(form, todos)
+    setErrors({ ...errors, [name]: found[name] })
   }
 
-  // Handle form submission
   async function handleSubmit(e) {
     e.preventDefault()
 
-    const validationErrors = validate(form)
-    setErrors(validationErrors)
+    const found = validate(form, todos)
+    setErrors(found)
+    if (Object.keys(found).length > 0) return // errors: don't submit
 
-    if (Object.keys(validationErrors).length > 0) {
-      return
-    }
-
-    setIsSaving(true)
-
+    setSaving(true)
     try {
-      const added = await addTodo(
-        form.text.trim(),
-        form.priority,
-        form.dueDate
-      )
-
-      if (added) {
-        setForm({
-          text: '',
-          priority: 'Medium',
-          dueDate: '',
+      // unwrap() throws if the thunk failed (e.g. json-server is stopped)
+      await dispatch(
+        addTodo({
+          text: form.text.trim(),
+          priority: form.priority,
+          dueDate: form.dueDate,
         })
+      ).unwrap()
 
-        setErrors({})
-      }
+      setForm(emptyForm) // success: clear the form and the errors
+      setErrors({})
+    } catch (err) {
+      // failed: keep what the user typed (the error banner is shown by App)
     } finally {
-      setIsSaving(false)
+      setSaving(false)
     }
   }
 
-  // Reusable input styling
-  const inputClass = (field) =>
-    `w-full min-w-0 rounded-lg border p-3 outline-none transition
-    ${
-      errors[field]
-        ? 'border-red-500 focus:ring-2 focus:ring-red-200'
-        : 'border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-gray-600'
-    }
-    bg-white text-gray-800 dark:bg-gray-800 dark:text-white`
-
   return (
     <form
-      onSubmit={handleSubmit}
       noValidate
-      className="grid grid-cols-1 gap-3 rounded-xl bg-white p-4 shadow-md dark:bg-gray-900 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_160px_180px_auto]"
+      onSubmit={handleSubmit}
+      className="grid grid-cols-[1fr_auto] items-start gap-x-[9px] gap-y-2.5 px-6.5 pt-5 pb-4 md:grid-cols-[1fr_auto_auto_auto] md:gap-x-2.5 md:px-8 md:pb-1"
     >
-      {/* Task input */}
-      <div className="min-w-0">
-        <label className="mb-2 block font-medium text-gray-700 dark:text-gray-200">
-          Task
-        </label>
-
+      {/* task text */}
+      <div className="order-1 col-span-2 md:col-span-1">
         <input
+          className={`${fieldClass} w-full ${borderClass(errors.text)}`}
           type="text"
           name="text"
           placeholder="Add a new task"
           value={form.text}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={inputClass('text')}
         />
-
-        {errors.text && (
-          <p className="mt-1 text-sm text-red-500">
-            {errors.text}
-          </p>
-        )}
+        <p className={errorClass}>{errors.text}</p>
       </div>
 
-      {/* Priority selection */}
-      <div>
-        <label className="mb-2 block font-medium text-gray-700 dark:text-gray-200">
-          Priority
-        </label>
+      {/* priority */}
+      <select
+        className={`${fieldClass} order-3 ${borderClass(false)} md:order-2`}
+        name="priority"
+        value={form.priority}
+        onChange={handleChange}
+      >
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
 
-        <select
-          name="priority"
-          value={form.priority}
-          onChange={handleChange}
-          className={inputClass('priority')}
-        >
-          <option>High</option>
-          <option>Medium</option>
-          <option>Low</option>
-        </select>
-      </div>
-
-      {/* Due date */}
-      <div>
-        <label className="mb-2 block font-medium text-gray-700 dark:text-gray-200">
-          Due Date
-        </label>
-
+      {/* due date (can't be in the past) */}
+      <div className="order-2 col-span-2 md:order-3 md:col-span-1">
         <input
+          className={`${fieldClass} w-full md:w-[170px] ${borderClass(errors.dueDate)}`}
           type="date"
           name="dueDate"
-          min={minDate}
+          min={getToday()}
           value={form.dueDate}
           onChange={handleChange}
           onBlur={handleBlur}
-          className={inputClass('dueDate')}
+          aria-label="Due date"
+          title="Due date (optional)"
         />
-
-        {errors.dueDate && (
-          <p className="mt-1 text-sm text-red-500">
-            {errors.dueDate}
-          </p>
-        )}
+        <p className={errorClass}>{errors.dueDate}</p>
       </div>
 
-      {/* Submit button */}
-      <div className="flex items-end">
-        <button
-          type="submit"
-          disabled={isSaving}
-          className="w-full rounded-lg bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {isSaving ? 'Saving...' : 'Add Task'}
-        </button>
-      </div>
+      <button
+        className="order-4 h-11 cursor-pointer rounded-[10px] bg-[#4f46e5] px-[18px] text-base font-bold text-white hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-60 md:px-[26px] dark:bg-[#5b52f0]"
+        type="submit"
+        disabled={saving}
+      >
+        {saving ? 'Saving…' : 'Add'}
+      </button>
     </form>
   )
 }
