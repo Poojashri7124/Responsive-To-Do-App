@@ -1,4 +1,10 @@
-function SearchBar({ query, onChange }) {
+
+interface SearchBarProps {
+  query: string
+  onChange: (value: string) => void
+}
+
+function SearchBar({ query, onChange }: SearchBarProps) {
   return (
     <div className="px-6.5 pb-4 md:px-8">
       <input

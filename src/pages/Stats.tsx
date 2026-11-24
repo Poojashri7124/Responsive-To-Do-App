@@ -1,3 +1,4 @@
+
 import { useSelector } from 'react-redux'
 import { selectTodoStats, selectTodosStatus } from '../features/todos/todoSlice'
 import { priorityColors } from '../utils/priorityColors'
@@ -12,7 +13,7 @@ function Stats() {
 
   if (status === 'idle' || status === 'loading') {
     return (
-      <p className="px-6.5 py-[30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
+      <p className="px-6.5 py-[ 30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
         Loading…
       </p>
     )
@@ -47,7 +48,7 @@ function Stats() {
             className="flex items-center justify-between border-b border-[#f1f0fa] py-3 dark:border-[#2c2a48]"
           >
             <span
-              className={`rounded-full px-3 py-0.5 text-[11px] leading-[18px] font-bold ${priorityColors[item.name]}`}
+              className={`rounded-full px-3 py-0.5 text-[11px] leading-[ 18px] font-bold ${priorityColors[item.name]}`}
             >
               {item.name}
             </span>

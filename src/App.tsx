@@ -1,5 +1,7 @@
+
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import type { RootState, AppDispatch } from './store/store'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import FilterTabs from './components/FilterTabs'
@@ -17,8 +19,8 @@ const tabs = [
 ]
 
 function App() {
-  const dispatch = useDispatch()
-  const error = useSelector(selectTodosError)
+  const dispatch = useDispatch<AppDispatch>()
+  const error = useSelector((state: RootState) => selectTodosError(state))
 
   // GET when the app opens
   useEffect(() => {
@@ -28,10 +30,10 @@ function App() {
   return (
     // mobile: page has a margin, desktop (md:) fills the whole screen
     <div className="min-h-screen bg-[#ecebff] p-[15px_17px] md:bg-white md:p-0 dark:bg-[#121120] dark:md:bg-[#1c1b2e]">
-      <div className="mx-auto flex max-w-[480px] flex-col overflow-hidden rounded-3xl bg-white shadow-[0_18px_45px_rgba(79,70,229,0.16)] md:min-h-screen md:max-w-none md:rounded-none md:shadow-none dark:bg-[#1c1b2e]">
+      <div className="mx-auto flex max-w-[ 480px] flex-col overflow-hidden rounded-3xl bg-white shadow-[0_18px_45px_rgba(79,70,229,0.16)] md:min-h-screen md:max-w-none md:rounded-none md:shadow-none dark:bg-[#1c1b2e]">
         <Header title="My Tasks" date="Saturday, 31 October 2026" />
 
-        <div className="mx-auto w-full max-w-[1000px] flex-1">
+        <div className="mx-auto w-full max-w-[ 1000px] flex-1">
           <FilterTabs tabs={tabs} />
 
           {error && (

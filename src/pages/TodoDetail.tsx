@@ -1,8 +1,12 @@
+
 import { useState, useEffect } from 'react'
+import type { ChangeEvent, FocusEvent, FormEvent } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import type { RootState, AppDispatch } from '../store/store'
 import { selectAllTodos, updateTodo, deleteTodo } from '../features/todos/todoSlice'
 import { useTodo } from '../hooks/useTodo'
+import type { TodoId, Priority } from '../types/todo'
 import { validate } from '../utils/validateTodo.js'
 
 const fieldClass =
@@ -11,24 +15,41 @@ const labelClass = 'mt-3 mb-1.5 text-sm text-[#6b6890] dark:text-[#a6a3c7]'
 // always takes its space, so the Save button never jumps when an error appears
 const errorClass = 'mt-1 min-h-5 text-[13px] text-red-600 dark:text-[#ff8d98]'
 
-function borderClass(hasError) {
+type TodoForm = {
+  text: string
+  priority: Priority
+  dueDate: string
+  completed: boolean
+}
+
+type FormErrors = {
+  text?: string
+  dueDate?: string
+}
+
+function borderClass(hasError: boolean | string | undefined) {
   return hasError
     ? 'border-red-500'
     : 'border-[#d9d6f5] focus:border-[#6366f1] dark:border-[#3a3860]'
 }
 
 function TodoDetail() {
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const todos = useSelector(selectAllTodos)
+  const dispatch = useDispatch<AppDispatch>()
+  const todos = useSelector((state: RootState) => selectAllTodos(state))
 
   // this one todo comes from our own hook (fetched by id, works after refresh)
-  const { todo, loading, error } = useTodo(id)
+  const { todo, loading, error } = useTodo(id as TodoId)
 
   // the edit form + its errors
-  const [form, setForm] = useState({ text: '', priority: 'Medium', dueDate: '', completed: false })
-  const [errors, setErrors] = useState({})
+  const [form, setForm] = useState<TodoForm>({
+    text: '',
+    priority: 'Medium',
+    dueDate: '',
+    completed: false
+  })
+  const [errors, setErrors] = useState<FormErrors>({})
   const [saving, setSaving] = useState(false)
 
   // fill the form when the todo arrives
@@ -43,18 +64,18 @@ function TodoDetail() {
     }
   }, [todo])
 
-  function handleChange(e) {
-    const { name, value, type, checked } = e.target
-    setForm({ ...form, [name]: type === 'checkbox' ? checked : value })
+  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    const { name, value, type, checked } = e.target as HTMLInputElement
+    setForm({ ...form, [name]: type === 'checkbox' ? checked : value } as TodoForm)
   }
 
-  function handleBlur(e) {
+  function handleBlur(e: FocusEvent<HTMLInputElement>) {
     const { name } = e.target
     const found = validate(form, todos, todo)
-    setErrors({ ...errors, [name]: found[name] })
+    setErrors({ ...errors, [name]: found[name as keyof FormErrors] })
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
     const found = validate(form, todos, todo)
@@ -65,7 +86,7 @@ function TodoDetail() {
     try {
       await dispatch(
         updateTodo({
-          id,
+          id: id as TodoId,
           changes: {
             text: form.text.trim(),
             priority: form.priority,
@@ -85,7 +106,7 @@ function TodoDetail() {
 
   async function handleDelete() {
     try {
-      await dispatch(deleteTodo(id)).unwrap()
+      await dispatch(deleteTodo(id as TodoId)).unwrap()
       navigate('/')
     } catch (err) {
       // failed: stay here (the error banner is shown by App)
@@ -94,7 +115,7 @@ function TodoDetail() {
 
   if (loading) {
     return (
-      <p className="px-6.5 py-[30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
+      <p className="px-6.5 py-[ 30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
         Loading…
       </p>
     )
@@ -102,7 +123,7 @@ function TodoDetail() {
 
   if (error || !todo) {
     return (
-      <div className="flex max-w-[560px] flex-col px-6.5 pt-[22px] pb-7 md:px-8">
+      <div className="flex max-w-[ 560px] flex-col px-6.5 pt-[ 22px] pb-7 md:px-8">
         <p className="mb-3.5 rounded-[10px] bg-[#fde2e4] px-3.5 py-3 text-[15px] text-[#d62839] dark:bg-[#43202a] dark:text-[#ff8d98]">
           {error}
         </p>
@@ -117,7 +138,7 @@ function TodoDetail() {
     <form
       noValidate
       onSubmit={handleSubmit}
-      className="flex max-w-[560px] flex-col px-6.5 pt-[22px] pb-7 md:px-8"
+      className="flex max-w-[ 560px] flex-col px-6.5 pt-[ 22px] pb-7 md:px-8"
     >
       <Link className="text-sm text-[#4f46e5] dark:text-[#a5a0ff]" to="/">
         ← Back to my tasks
@@ -171,16 +192,16 @@ function TodoDetail() {
         Completed
       </label>
 
-      <div className="mt-[22px] flex gap-2.5">
+      <div className="mt-[ 22px] flex gap-2.5">
         <button
-          className="h-11 cursor-pointer rounded-[10px] bg-[#4f46e5] px-[22px] text-[15px] font-bold text-white hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#5b52f0]"
+          className="h-11 cursor-pointer rounded-[10px] bg-[#4f46e5] px-[ 22px] text-[15px] font-bold text-white hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#5b52f0]"
           type="submit"
           disabled={saving}
         >
           {saving ? 'Saving…' : 'Save'}
         </button>
         <button
-          className="h-11 cursor-pointer rounded-[10px] border border-[#f3b7bd] bg-white px-[22px] text-[15px] font-bold text-[#d62839] dark:bg-[#1c1b2e]"
+          className="h-11 cursor-pointer rounded-[10px] border border-[#f3b7bd] bg-white px-[ 22px] text-[15px] font-bold text-[#d62839] dark:bg-[#1c1b2e]"
           type="button"
           onClick={handleDelete}
         >

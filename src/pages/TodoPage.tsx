@@ -1,5 +1,8 @@
+
 import { useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { useSelector } from 'react-redux'
+import type { RootState } from '../store/store'
 import Progress from '../components/Progress'
 import TaskForm from '../components/TaskForm'
 import SearchBar from '../components/SearchBar'
@@ -11,12 +14,16 @@ import {
   selectTodosError,
 } from '../features/todos/todoSlice'
 
+type TodoPageProps = {
+  filter: 'All' | 'Active' | 'Completed'
+}
+
 // One page used by "/", "/active" and "/completed".
 // The "filter" prop comes from the route.
-function TodoPage({ filter }) {
-  const todos = useSelector(selectAllTodos)
-  const status = useSelector(selectTodosStatus)
-  const error = useSelector(selectTodosError)
+function TodoPage({ filter }: TodoPageProps) {
+  const todos = useSelector((state: RootState) => selectAllTodos(state))
+  const status = useSelector((state: RootState) => selectTodosStatus(state))
+  const error = useSelector((state: RootState) => selectTodosError(state))
   const loading = status === 'idle' || status === 'loading'
   const [query, setQuery] = useState('') // only this page needs the search text
   const [sortByDue, setSortByDue] = useState(false)
@@ -35,13 +42,13 @@ function TodoPage({ filter }) {
           className="accent-[#4f46e5]"
           type="checkbox"
           checked={sortByDue}
-          onChange={(e) => setSortByDue(e.target.checked)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setSortByDue(e.target.checked)}
         />
         Sort by due date
       </label>
 
       {loading && (
-        <p className="px-6.5 py-[30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
+        <p className="px-6.5 py-[ 30px] text-center text-[15px] text-[#8a86a8] md:px-8 dark:text-[#a6a3c7]">
           Loading…
         </p>
       )}

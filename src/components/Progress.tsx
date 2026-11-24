@@ -1,8 +1,12 @@
+
 import { useSelector } from 'react-redux'
+import type { RootState } from '../store/store'
 import { selectTodoStats } from '../features/todos/todoSlice'
 
 function Progress() {
-  const { completed, total, percent } = useSelector(selectTodoStats)
+  const { completed, total, percent } = useSelector(
+    (state: RootState) => selectTodoStats(state)
+  )
 
   return (
     <div className="px-6.5 pt-5 md:px-8">
@@ -12,6 +16,7 @@ function Progress() {
           {completed} of {total} done · {percent}%
         </span>
       </div>
+
       <div className="h-2 overflow-hidden rounded-full bg-[#eeedff] dark:bg-[#2d2a55]">
         <div
           className="h-full rounded-full bg-[#4f46e5] transition-[width] duration-300"

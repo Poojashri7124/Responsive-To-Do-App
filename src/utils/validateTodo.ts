@@ -1,11 +1,28 @@
+
 import { getToday } from './date'
+import type { Todo } from '../types/todo'
 
 // form = { text, dueDate }
 // todos = all todos (to find duplicates)
 // current = the todo being edited (only on the detail page)
 // Returns an errors object, e.g. { text: "Task can't be empty" }
-export function validate(form, todos, current = null) {
-  const errors = {}
+
+type TodoForm = {
+  text: string
+  dueDate: string
+}
+
+type ValidationErrors = {
+  text?: string
+  dueDate?: string
+}
+
+export function validate(
+  form: TodoForm,
+  todos: Todo[],
+  current: Todo | null = null
+): ValidationErrors {
+  const errors: ValidationErrors = {}
   const text = form.text.trim()
 
   if (text === '') {

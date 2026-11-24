@@ -1,31 +1,34 @@
-import {useState, useEffect} from 'react'
-import {getTodo} from '../api.js'
 
-export function useTodo(id){
-    const [todo, setTodo] = useState(null)
+import { useState, useEffect } from 'react'
+import { getTodo } from '../api.js'
+import type { Todo, TodoId } from '../types/todo'
+
+export function useTodo(id: TodoId) {
+    const [todo, setTodo] = useState<Todo | null>(null)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        async function loadTodo(){
-            try{
+        async function loadTodo() {
+            try {
                 setLoading(true)
                 setError(null)
                 const data = await getTodo(id)
                 setTodo(data)
 
             }
-            catch(err){
+            catch (err) {
                 setTodo(null)
                 setError('Could not load this todo. It may not exist or json server is not running.')
 
             }
-            finally{
+            finally {
                 setLoading(false)
             }
         }
         loadTodo()
 
-    },[id])
-    return {todo, loading, error}
+    }, [id])
+
+    return { todo, loading, error }
 }

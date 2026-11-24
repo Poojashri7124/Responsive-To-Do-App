@@ -1,18 +1,18 @@
 {
   "todos": [
     {
-      "text": "dfsf",
-      "priority": "Low",
-      "dueDate": "2026-11-25",
-      "completed": true,
-      "id": "hhS4S_LABvA"
+      "text": "component",
+      "priority": "Medium",
+      "dueDate": "2026-11-18",
+      "completed": false,
+      "id": "c_TqkiKAj1A"
     },
     {
-      "text": "htrhr",
+      "text": "dropdown",
       "priority": "Medium",
-      "dueDate": "2026-11-22",
-      "completed": true,
-      "id": "p8UPVdRn8sQ"
+      "dueDate": "2026-12-04",
+      "completed": false,
+      "id": "qNiOyYqEfhQ"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
