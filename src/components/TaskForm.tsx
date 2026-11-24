@@ -27,7 +27,7 @@ const emptyForm: TaskFormValues = {
   text: '',
   priority: 'Medium',
   dueDate: '',
-}
+} 
 
 // Shared look of the three fields
 const fieldClass =
@@ -109,7 +109,7 @@ function TaskForm() {
     <form
       noValidate
       onSubmit={handleSubmit}
-      className="grid grid-cols-[1fr_auto] items-start gap-x-[ 9px] gap-y-2.5 px-6.5 pt-5 pb-4 md:grid-cols-[1fr_auto_auto_auto] md:gap-x-2.5 md:px-8 md:pb-1"
+      className="grid grid-cols-[1fr_auto] items-start gap-x-[9px] gap-y-2.5 px-6.5 pt-5 pb-4 md:grid-cols-[1fr_auto_auto_auto] md:gap-x-2.5 md:px-8 md:pb-1"
     >
       {/* Task text */}
       <div className="order-1 col-span-2 md:col-span-1">
@@ -154,11 +154,12 @@ function TaskForm() {
       </div>
 
       <button
-      className="order-4 h-11 cursor-pointer rounded-[10px] bg-[#4f46e5] px-[18px] text-base font-bold text-white hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-60 md:px-[26px] dark:bg-[#5b52f0]"        type="submit"
-        disabled={saving}
-      >
-        {saving ? 'Saving…' : 'Add'}
-      </button>
+  className="order-4 h-11 cursor-pointer rounded-[10px] bg-[#4f46e5] px-[18px] text-base font-bold text-white hover:bg-[#4338ca] disabled:cursor-not-allowed disabled:opacity-60 md:px-[26px] dark:bg-[#5b52f0]"
+  type="submit"
+  disabled={saving}
+>
+  {saving ? 'Saving…' : 'Add'}
+</button>
     </form>
   )
 }

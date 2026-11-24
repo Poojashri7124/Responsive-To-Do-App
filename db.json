@@ -4,7 +4,7 @@
       "text": "component",
       "priority": "Medium",
       "dueDate": "2026-11-18",
-      "completed": false,
+      "completed": true,
       "id": "c_TqkiKAj1A"
     },
     {
@@ -13,6 +13,20 @@
       "dueDate": "2026-12-04",
       "completed": false,
       "id": "qNiOyYqEfhQ"
+    },
+    {
+      "text": "yuyu",
+      "priority": "Medium",
+      "dueDate": "",
+      "completed": false,
+      "id": "ZG6ME-xGGbU"
+    },
+    {
+      "text": "kjhj",
+      "priority": "High",
+      "dueDate": "2026-11-30",
+      "completed": false,
+      "id": "bupEcaJP2xY"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

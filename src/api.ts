@@ -1,7 +1,7 @@
 
 import type { Todo, TodoId, NewTodo } from './types/todo'
 
-const BASE_URL = 'http://localhost:3001/todos'
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 // One helper: every request goes through here, so res.ok is always checked
 async function request<T>(url: string, options?: RequestInit): Promise<T> {

@@ -68,11 +68,12 @@ function TaskItem({
   return (
     <li className="flex items-center gap-3 border-b border-[#f1f0fa] py-3.5 dark:border-[#2c2a48]">
       <input
-      className="grid h-[ 18px] w-[ 18px] shrink-0 cursor-pointer appearance-none place-content-center rounded-[5px] border-[1.5px] border-[#b9b5e6] bg-white checked:border-[#4f46e5] checked:bg-[#4f46e5] checked:after:text-xs checked:after:leading-none checked:after:text-white checked:after:content-['✓'] dark:border-[#5a577f] dark:bg-[#26243d] dark:checked:border-[#5b52f0] dark:checked:bg-[#5b52f0]"        type="checkbox"
-        checked={completed}
-        onChange={() => dispatch(toggleTodo(id))}
-        aria-label={text}
-      />
+  className="grid h-[18px] w-[18px] shrink-0 cursor-pointer appearance-none place-content-center rounded-[5px] border-[1.5px] border-[#b9b5e6] bg-white checked:border-[#4f46e5] checked:bg-[#4f46e5] checked:after:text-xs checked:after:leading-none checked:after:text-white checked:after:content-['✓'] dark:border-[#5a577f] dark:bg-[#26243d] dark:checked:border-[#5b52f0] dark:checked:bg-[#5b52f0]"
+  type="checkbox"
+  checked={completed}
+  onChange={() => dispatch(toggleTodo(id))}
+  aria-label={text}
+/>
 
       <div className="min-w-0 flex-1">
         {isEditing ? (
