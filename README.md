@@ -4,7 +4,7 @@ A responsive to-do app with priorities, due dates, search, progress tracking and
 
 ## 🔗 Live link
 
-**[https://YOUR-LIVE-LINK-HERE](https://YOUR-LIVE-LINK-HERE)**
+**[https://YOUR-LIVE-LINK-HERE]**
 
 ## 📸 Screenshots
 
