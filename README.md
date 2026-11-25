@@ -2,24 +2,31 @@
 
 A responsive to-do app with priorities, due dates, search, progress tracking and a dark mode, built step by step with React, Redux Toolkit and Tailwind CSS.
 
-## 🔗 Live link
+ 🔗 Live link
 
-**[https://YOUR-LIVE-LINK-HERE]**
+https://responsive-to-do-app.onrender.com/
 
-## 📸 Screenshots
+ 📸 Screenshots
 
 | Desktop |
 
-| ![Desktop light](screenshots\todo_web_dark.png) |
-| ![Desktop dark](screenshots\todo_web_dark.png) |
+<img width="192.0" height="79.2" alt="todo_web_light" src="https://github.com/user-attachments/assets/02015001-5c27-43b5-8dcf-4b8f889176b3" />
+
+<img width="191.9" height="79.2" alt="todo_web_dark" src="https://github.com/user-attachments/assets/7fcb7121-b8e6-400c-b1f9-ed486d59680e" />
+
 
 | Mobile |
-| ![MobileDark] (screenshots\todo_phone_dark.png)|
-| ![MobileLight] (screenshots\todo_phone.png) |
+
+<img width="39.3" height="80.6" alt="todo_stats" src="https://github.com/user-attachments/assets/ba25f0a4-4bbb-4531-950c-b98eb7bf1d11" />
+
+<img width="38.9" height="80.6" alt="todo_phone" src="https://github.com/user-attachments/assets/4189d517-ce37-4968-983d-765c321a17bd" />
+
+<img width="37.2" height="80.6" alt="todo_phone_dark" src="https://github.com/user-attachments/assets/3bcf9790-b8e8-45dc-af2c-b18ab2ee31d0" />
 
 
 
-## ✨ Features
+
+✨ Features
 
 - Add a todo with a **priority** (High / Medium / Low) and an optional **due date**
 - **Validation** with clear error messages: task can't be empty, minimum 3 characters, no duplicate tasks, due date can't be in the past
@@ -35,7 +42,7 @@ A responsive to-do app with priorities, due dates, search, progress tracking and
 - Fully responsive: full-screen layout on desktop, card layout on mobile
 - Custom **404 page**
 
-## 🛠️ Tech stack
+🛠️ Tech stack
 
 - **React** (Vite)
 - **Redux Toolkit** + React Redux (`createSlice`, `createAsyncThunk`, selectors)
@@ -45,7 +52,7 @@ A responsive to-do app with priorities, due dates, search, progress tracking and
 - **API:** [json-server](https://github.com/typicode/json-server) – a local REST API (`http://localhost:3001/todos`) that saves the todos in `db.json`
   - The TypeScript practice app loads users from [JSONPlaceholder](https://jsonplaceholder.typicode.com/users)
 
-## 🚀 How to run locally
+🚀 How to run locally
 
 You need [Node.js](https://nodejs.org/) installed.
 
@@ -86,7 +93,7 @@ npm install
 npm run dev
 ```
 
-## 📂 Project structure
+ 📂 Project structure
 
 ```
 src/
@@ -102,7 +109,7 @@ src/
 db.json                  json-server database
 ```
 
-## 📚 What I learned in each phase
+ 📚 What I learned in each phase
 
 - **Phase 1 – Static UI:** Built the layout with React components and props, and made it responsive with Flexbox, Grid and media queries.
 - **Phase 2 – State and events:** Used `useState` to add, toggle, delete, filter and search todos, and learned never to mutate state and to calculate filtered lists while rendering.
