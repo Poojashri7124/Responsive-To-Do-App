@@ -14,7 +14,6 @@ async function request<T>(url: string, options?: RequestInit): Promise<T> {
 
 export async function getTodos(): Promise<Todo[]> {
 
-  await new Promise<void>((resolve) => setTimeout(resolve, 3000)) //Loading message for 3 seconds
   return request<Todo[]>(BASE_URL)
 }
 

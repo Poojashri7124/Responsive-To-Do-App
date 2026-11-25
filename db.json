@@ -1,18 +1,25 @@
 {
   "todos": [
     {
-      "text": "component",
+      "text": "Complete assigned modules",
       "priority": "Medium",
-      "dueDate": "2026-11-18",
-      "completed": false,
-      "id": "c_TqkiKAj1A"
+      "dueDate": "2026-11-30",
+      "completed": true,
+      "id": "IqIqHA0HZA0"
     },
     {
-      "text": "dropdown",
-      "priority": "Medium",
+      "text": "Include screenshot in README",
+      "priority": "High",
       "dueDate": "2026-12-04",
+      "completed": true,
+      "id": "iTl5OrvTPHU"
+    },
+    {
+      "text": "Deploy using Render.com",
+      "priority": "Low",
+      "dueDate": "2026-11-30",
       "completed": false,
-      "id": "qNiOyYqEfhQ"
+      "id": "mkAwIe1eFl4"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
