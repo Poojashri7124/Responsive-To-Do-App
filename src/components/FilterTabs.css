@@ -1,0 +1,37 @@
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 18px 10px;
+  border-bottom: 1px solid #efeefa;
+}
+
+.tab {
+  padding: 10px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b6890;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.tab-active {
+  background: #eeedff;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    gap: 8px;
+    padding: 0 26px 16px;
+  }
+
+  .tab {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+}
