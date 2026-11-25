@@ -11,11 +11,11 @@ A responsive to-do app with priorities, due dates, search, progress tracking and
 | Desktop |
 
 | ![Desktop light](screenshots\todo_web_dark.png) |
-| ![Desktop dark](C:\Users\A1026188510\Downloads\Responsive-To-Do-App-main\screenshots\todo_web_dark.png) |
+| ![Desktop dark](screenshots\todo_web_dark.png) |
 
 | Mobile |
-| ![MobileDark] (C:\Users\A1026188510\Downloads\Responsive-To-Do-App-main\screenshots\todo_phone_dark.png)|
-| ![MobileLight] (C:\Users\A1026188510\Downloads\Responsive-To-Do-App-main\screenshots\todo_phone.png) |
+| ![MobileDark] (screenshots\todo_phone_dark.png)|
+| ![MobileLight] (screenshots\todo_phone.png) |
 
 
 
